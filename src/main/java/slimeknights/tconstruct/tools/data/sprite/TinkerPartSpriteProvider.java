@@ -90,7 +90,7 @@ public class TinkerPartSpriteProvider extends AbstractPartSpriteProvider {
     buildTool("vein_hammer").withLarge().addBreakableHead("head").addHead("back").addBreakableHead("front").addHandle("handle");
     // shovel
     buildTool("mattock").addBreakableHead("axe").addBreakableHead("pick"); // handle provided by pickaxe
-    buildTool("pickadze").addBreakableHead("axe"); // handle and "pick" head provided by other tools
+    buildTool("pickadze").addBreakableHead("pick").addHead("adze"); // handle provided by pickaxe
     buildTool("excavator").withLarge().addBreakableHead("head").addHead("binding").addHandle("handle").addHandle("grip");
     // axe
     buildTool("hand_axe").addBreakableHead("head").addBinding("binding"); // handle provided by pickaxe

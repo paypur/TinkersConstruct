@@ -9,8 +9,8 @@
   "modifier_roots": [ "tconstruct:item/tool/pickadze/modifiers/" ],
   "parts": [
     { "name": "handle", "index": 1 },
-    { "name": "pick",   "index": 0 },
-    { "name": "adze",   "index": 2 }
+    { "name": "adze",   "index": 2 },
+    { "name": "pick",   "index": 0 }
   ],
   "overrides": [
     {

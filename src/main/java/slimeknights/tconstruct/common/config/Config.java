@@ -236,10 +236,13 @@ public class Config {
     public final ForgeConfigSpec.BooleanValue extraToolTips; // TODO: do we even need this config option? who would turn it off?
     public final ForgeConfigSpec.BooleanValue logMissingMaterialTextures;
     public final ForgeConfigSpec.BooleanValue logMissingModifierTextures;
-    public final ForgeConfigSpec.BooleanValue showModifiersInJEI;
     public final ForgeConfigSpec.BooleanValue renderShieldSlotItem;
     public final ForgeConfigSpec.BooleanValue modifiersIDsInAdvancedTooltips;
     public final ForgeConfigSpec.IntValue maxSmelteryItemQuads;
+
+    // JEI
+    public final BooleanValue showModifiersInJEI;
+    public final BooleanValue showPotionFluidInJEI;
 
     // framed modifier
     public final ForgeConfigSpec.BooleanValue renderItemFrame;
@@ -283,6 +286,10 @@ public class Config {
         .comment("If true, modifiers will be added to the JEI ingredient list. If false, they will only be visible in the modifiers recipe tab.")
         .translation("tconstruct.configgui.showModifiersInJEI")
         .define("showModifiersInJEI", true);
+
+      this.showPotionFluidInJEI = builder
+        .comment("If true, variants of our potion fluid for every potion will show in JEI. If false it will be hidden, but still usable.")
+        .define("showPotionFluidInJEI", true);
 
       this.maxSmelteryItemQuads = builder
         .comment("Maximum number of quads to render for items in the smeltery. Most blocks are about 6 quads, items like ingots are around 26.",

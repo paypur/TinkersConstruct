@@ -27,13 +27,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -51,6 +50,7 @@ import slimeknights.tconstruct.common.TinkerTags;
 import slimeknights.tconstruct.common.config.Config;
 import slimeknights.tconstruct.common.registration.CastItemObject;
 import slimeknights.tconstruct.fluids.TinkerFluids;
+import slimeknights.tconstruct.fluids.fluids.PotionFluidType;
 import slimeknights.tconstruct.library.materials.definition.IMaterial;
 import slimeknights.tconstruct.library.materials.definition.MaterialVariantId;
 import slimeknights.tconstruct.library.modifiers.ModifierEntry;
@@ -96,6 +96,7 @@ import slimeknights.tconstruct.plugin.jei.partbuilder.PatternIngredientHelper;
 import slimeknights.tconstruct.plugin.jei.partbuilder.PatternIngredientRenderer;
 import slimeknights.tconstruct.plugin.jei.transfer.CraftingStationTransferInfo;
 import slimeknights.tconstruct.plugin.jei.transfer.TinkerStationTransferInfo;
+import slimeknights.tconstruct.plugin.jei.util.PotionSubtypeInterpreter;
 import slimeknights.tconstruct.shared.TinkerMaterials;
 import slimeknights.tconstruct.smeltery.TinkerSmeltery;
 import slimeknights.tconstruct.smeltery.client.screen.HeatingStructureScreen;
@@ -309,19 +310,8 @@ public class JEIPlugin implements IModPlugin {
     registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, TinkerSmeltery.scorchedDrain.asItem(), tables);
     registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, TinkerSmeltery.scorchedDuct.asItem(), tables);
     registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, TinkerSmeltery.scorchedChute.asItem(), tables);
-    registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, TinkerFluids.potion.asItem(), (stack, context) -> {
-      if (!stack.hasTag()) {
-        return IIngredientSubtypeInterpreter.NONE;
-      }
-      Potion potionType = PotionUtils.getPotion(stack);
-      String potionTypeString = potionType.getName("");
-      StringBuilder stringBuilder = new StringBuilder(potionTypeString);
-      List<MobEffectInstance> effects = PotionUtils.getMobEffects(stack);
-      for (MobEffectInstance effect : effects) {
-        stringBuilder.append(";").append(effect);
-      }
-      return stringBuilder.toString();
-    });
+    registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, TinkerFluids.potion.asItem(), (PotionSubtypeInterpreter<ItemStack>)ItemStack::getTag);
+    registry.registerSubtypeInterpreter(ForgeTypes.FLUID_STACK, TinkerFluids.potion.get(), (PotionSubtypeInterpreter<FluidStack>)FluidStack::getTag);
 
     IIngredientSubtypeInterpreter<ItemStack> toolPartInterpreter = (stack, context) -> {
       MaterialVariantId materialId = IMaterialItem.getMaterialFromStack(stack);
@@ -455,6 +445,18 @@ public class JEIPlugin implements IModPlugin {
     optionalCast(manager, TinkerSmeltery.coinCast);
     optionalCast(manager, TinkerSmeltery.wireCast);
     optionalItem(manager, TinkerMaterials.necroniumBone, "ingots/uranium");
+
+    // add potion fluids for each potion variant if requested
+    if (Config.CLIENT.showPotionFluidInJEI.get()) {
+      manager.addIngredientsAtRuntime(ForgeTypes.FLUID_STACK,
+                                      Registry.POTION.holders().filter(holder -> {
+                                        Potion potion = holder.get();
+                                        return potion != Potions.EMPTY && potion != Potions.WATER;
+                                      }).map(holder -> PotionFluidType.potionFluid(holder.key(), FluidType.BUCKET_VOLUME)).toList());
+    }
+    // remove variantless potion fluid
+    manager.removeIngredientsAtRuntime(ForgeTypes.FLUID_STACK, Collections.singleton(new FluidStack(TinkerFluids.potion.get(), FluidType.BUCKET_VOLUME)));
+
     modIdHelper = jeiRuntime.getJeiHelpers().getModIdHelper();
   }
 

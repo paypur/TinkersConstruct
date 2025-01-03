@@ -3,6 +3,8 @@ package slimeknights.tconstruct.fluids.fluids;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -54,12 +56,26 @@ public class PotionFluidType extends FluidType {
     });
   }
 
+  /** Creates the potion tag */
+  private static CompoundTag potionTag(ResourceLocation location) {
+    CompoundTag tag = new CompoundTag();
+    tag.putString("Potion", location.toString());
+    return tag;
+  }
+
   /** Creates a fluid stack for the given potion */
+  public static FluidStack potionFluid(ResourceKey<Potion> potion, int size) {
+    // just going to assume the location is valid; we do more validation in 1.20
+    CompoundTag tag = potionTag(potion.location());
+    return new FluidStack(TinkerFluids.potion.get(), size, tag);
+  }
+
+  /** Creates a fluid stack for the given potion */
+  @SuppressWarnings("deprecation")
   public static FluidStack potionFluid(Potion potion, int size) {
     CompoundTag tag = null;
     if (potion != Potions.EMPTY) {
-      tag = new CompoundTag();
-      tag.putString("Potion", Registry.POTION.getKey(potion).toString());
+      tag = potionTag(Registry.POTION.getKey(potion));
     }
     return new FluidStack(TinkerFluids.potion.get(), size, tag);
   }

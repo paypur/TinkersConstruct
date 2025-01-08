@@ -32,11 +32,9 @@ public interface ISmelteryTankHandler {
    */
   default void notifyFluidsChanged(FluidChange type, FluidStack fluid) {}
 
-  /**
-   * Adds a listener to the display listeners list
-   * @param listener  Listener
-   */
-  void addDisplayListener(IDisplayFluidListener listener);
+  /** @deprecated no longer needed. Will be removed in 1.20.1 */
+  @Deprecated(forRemoval = true)
+  default void addDisplayListener(IDisplayFluidListener listener) {}
 
   /** Simple enum to make {@link #notifyFluidsChanged(FluidChange, FluidStack)} more readible */
   enum FluidChange {

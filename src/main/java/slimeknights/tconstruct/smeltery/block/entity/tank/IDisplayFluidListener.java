@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.ApiStatus.OverrideOnly;
 
 /**
  * Interface for blocks to be notified when the smeltery has a new bottommost fluid
@@ -19,9 +20,12 @@ public interface IDisplayFluidListener {
   void notifyDisplayFluidUpdated(FluidStack fluid);
 
   /**
-   * Gets the position of the listener
+   * Gets the position of the listener.
    * @return  Position of listener
+   * @deprecated Will be removed in 1.20.1 as its no longer needed. Block entity controller shouldn't rely on position equivalence to compare listeners anymore.
    */
+  @Deprecated
+  @OverrideOnly
   BlockPos getListenerPos();
 
   /** Makes the fluid contain 1000mb, or {@link FluidStack#EMPTY} if empty */

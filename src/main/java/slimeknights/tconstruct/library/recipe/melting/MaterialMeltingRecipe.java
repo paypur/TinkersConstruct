@@ -30,7 +30,7 @@ public class MaterialMeltingRecipe implements IMeltingRecipe, IMultiRecipe<Melti
     ContextKey.ID.requiredField(),
     MaterialVariantId.LOADABLE.requiredField("input", r -> r.input.getVariant()),
     IntLoadable.FROM_ONE.requiredField("temperature", r -> r.temperature),
-    FluidStackLoadable.REQUIRED_STACK.requiredField("result", r -> r.result),
+    FluidStackLoadable.REQUIRED_STACK_NBT.requiredField("result", r -> r.result),
     MaterialMeltingRecipe::new);
 
   @Getter

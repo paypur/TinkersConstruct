@@ -178,8 +178,8 @@ public class TooltipUtil {
       }
     } else {
       tool.getOrCreateTag().putString(KEY_NAME, name);
+      tool.resetHoverName();
     }
-    tool.resetHoverName();
   }
 
   /** Gets the display name from the given tool */

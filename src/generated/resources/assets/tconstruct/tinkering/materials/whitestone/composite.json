@@ -1,5 +1,5 @@
 {
-  "color": "FFCDC68B",
+  "color": "FFE0E9EC",
   "fallbacks": [
     "rock"
   ],
@@ -16,35 +16,37 @@
         "type": "tconstruct:grey_to_color",
         "palette": [
           {
-            "color": "FFFFFFFF",
+            "color": "FF000000",
             "grey": 0
           },
           {
-            "color": "FFF6FABD",
+            "color": "FF717275",
             "grey": 63
           },
           {
-            "color": "FFEEF6B4",
+            "color": "FF7F8084",
             "grey": 102
           },
           {
-            "color": "FFDEE6A4",
+            "color": "FF989A9E",
             "grey": 140
           },
           {
-            "color": "FFD5DA94",
+            "color": "FFA0A1A1",
             "grey": 178
           },
           {
-            "color": "FFCDC68B",
+            "color": "FFB4B9BE",
             "grey": 216
           },
           {
-            "color": "FFC5BE8B",
+            "color": "FFCFD2D4",
             "grey": 255
           }
         ]
       }
-    }
-  }
+    },
+    "variant": true
+  },
+  "texture": "tconstruct:whitestone"
 }

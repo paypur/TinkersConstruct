@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.SmithingScreen;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,6 +41,8 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
   private static final Component UPGRADES_TEXT = TConstruct.makeTranslation("gui", "tinker_station.upgrades");
   private static final Component TRAITS_TEXT = TConstruct.makeTranslation("gui", "tinker_station.traits");
 
+  private static final ResourceLocation ICON_TEXTURE = TConstruct.getResource("textures/gui/icons.png");
+
   /** Side panels, for tools and modifiers */
   protected final InfoPanelScreen<ToolTableScreen<T,C>,C> tinkerInfo;
   protected final InfoPanelScreen<ToolTableScreen<T,C>,C> modifierInfo;
@@ -54,12 +57,6 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
   protected int armorStandY = 0;
   protected int armorStandScale = 10;
   protected float armorStandAngle = 0;
-
-  // TODO: box vars don't need to be fields once debug box is removed
-  protected int armorStandBoxX;
-  protected int armorStandBoxY;
-  protected int armorStandBoxW;
-  protected int armorStandBoxH;
   protected double armorStandLastMouseX = -1;
 
   public ToolTableScreen(C c, Inventory playerInventory, Component title) {
@@ -100,6 +97,8 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
       Quaternionf pose = new Quaternionf();
       SmithingScreen.ARMOR_STAND_ANGLE.rotateY(this.armorStandAngle, pose);
       InventoryScreen.renderEntityInInventory(graphics, this.armorStandX, this.armorStandY, this.armorStandScale, pose, null, this.armorStandPreview);
+
+      graphics.blit(ICON_TEXTURE, armorStandX - 16, armorStandY - 16, 0, 184, 32, 32);
     }
   }
 
@@ -113,11 +112,6 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
     this.armorStandX = this.cornerX + x;
     this.armorStandY = this.cornerY + y;
     this.armorStandScale = scale;
-
-    this.armorStandBoxW = scale + 30;
-    this.armorStandBoxH = scale * 2;
-    this.armorStandBoxX = this.armorStandX - this.armorStandBoxW / 2;
-    this.armorStandBoxY = this.armorStandY - this.armorStandBoxH + 5;
   }
 
   /** Updates the item displayed on the armor stand */
@@ -203,7 +197,11 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-    this.clickedOnArmorStand = this.enableArmorStandPreview && GuiUtil.isHovered((int) mouseX, (int) mouseY, this.armorStandBoxX, this.armorStandBoxY, this.armorStandBoxW, this.armorStandBoxH);
+    int armorStandBoxW = this.armorStandScale + 30;
+    int armorStandBoxH = this.armorStandScale * 2;
+    int armorStandBoxX = this.armorStandX - armorStandBoxW / 2;
+    int armorStandBoxY = this.armorStandY - armorStandBoxH + 5;
+    this.clickedOnArmorStand = this.enableArmorStandPreview && GuiUtil.isHovered((int) mouseX, (int) mouseY, armorStandBoxX, armorStandBoxY, armorStandBoxW, armorStandBoxH);
 
     return super.mouseClicked(mouseX, mouseY, mouseButton);
   }

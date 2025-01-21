@@ -421,11 +421,6 @@ public class TinkerStationScreen extends ToolTableScreen<TinkerStationBlockEntit
       this.textField.render(graphics, mouseX, mouseY, partialTicks);
     }
 
-    // TODO: debug, remove
-    graphics.setColor(1.0F, 0, 0, 1.0F);
-    graphics.blit(TINKER_STATION_TEXTURE, this.armorStandBoxX, this.armorStandBoxY, 0, 0, this.armorStandBoxW, this.armorStandBoxH);
-    graphics.setColor(1.0F, 1f, 1f, 1.0F);
-
     renderArmorStand(graphics);
   }
 

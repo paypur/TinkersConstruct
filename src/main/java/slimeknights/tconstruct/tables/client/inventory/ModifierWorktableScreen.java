@@ -96,11 +96,6 @@ public class ModifierWorktableScreen extends ToolTableScreen<ModifierWorktableBl
 
     super.renderBg(graphics, partialTicks, mouseX, mouseY);
 
-    // TODO: debug, remove
-    graphics.setColor(1.0F, 0, 0, 1.0F);
-    graphics.blit(BACKGROUND, this.armorStandBoxX, this.armorStandBoxY, 0, 0, this.armorStandBoxW, this.armorStandBoxH);
-    graphics.setColor(1.0F, 1f, 1f, 1.0F);
-
     renderArmorStand(graphics);
   }
 

@@ -192,6 +192,8 @@ public class TinkerStationScreen extends ToolTableScreen<TinkerStationBlockEntit
     this.buttonsScreen = new TinkerStationButtonsWidget(this, this.cornerX - TinkerStationButtonsWidget.width(COLUMN_COUNT) - 2,
       this.cornerY + this.centerBeam.h + this.buttonDecorationTop.h, layouts, buttonsStyle);
 
+    this.setupArmorStandPreview(-55, 190, 35);
+
     this.updateLayout();
   }
 
@@ -421,19 +423,16 @@ public class TinkerStationScreen extends ToolTableScreen<TinkerStationBlockEntit
 
     // TODO: debug, remove
     graphics.setColor(1.0F, 0, 0, 1.0F);
-    graphics.blit(TINKER_STATION_TEXTURE, this.buttonsScreen.getLeftPos() - this.leftBeam.w, this.cornerY + 130, 0, 0, this.cornerX - (this.buttonsScreen.getLeftPos() - this.leftBeam.w), 60);
+    graphics.blit(TINKER_STATION_TEXTURE, this.armorStandBoxX, this.armorStandBoxY, 0, 0, this.armorStandBoxW, this.armorStandBoxH);
     graphics.setColor(1.0F, 1f, 1f, 1.0F);
 
-
-    renderArmorStand(graphics, -55, 190, 35);
+    renderArmorStand(graphics);
   }
 
 
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-    this.clickedOnArmorStand = false;
-
     if (this.tinkerInfo.handleMouseClicked(mouseX, mouseY, mouseButton)) {
       return false;
     }
@@ -444,13 +443,6 @@ public class TinkerStationScreen extends ToolTableScreen<TinkerStationBlockEntit
     
     if(this.buttonsScreen.handleMouseClicked(mouseX, mouseY, mouseButton)) {
       return false;
-    }
-
-    int x = this.buttonsScreen.getLeftPos() - this.leftBeam.w;
-    int y = this.cornerY;
-
-    if (GuiUtil.isHovered((int) mouseX, (int) mouseY, x, y + 130, this.cornerX - x, 60)) {
-       this.clickedOnArmorStand = true;
     }
 
     return super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -465,12 +457,6 @@ public class TinkerStationScreen extends ToolTableScreen<TinkerStationBlockEntit
     if (this.modifierInfo.handleMouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)) {
       return false;
     }
-
-    if (this.clickedOnArmorStand && this.enableArmorStandPreview && this.dragLastX != -1) {
-      this.armorStandAngle += (float) (mouseX - this.dragLastX) / 10f;
-      // TODO: return something??
-    }
-    this.dragLastX = mouseX;
 
     return super.mouseDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, unkowwn);
   }

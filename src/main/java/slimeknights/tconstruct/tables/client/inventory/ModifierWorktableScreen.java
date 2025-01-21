@@ -10,10 +10,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import slimeknights.tconstruct.TConstruct;
 import slimeknights.tconstruct.common.TinkerTags;
-import slimeknights.tconstruct.library.client.GuiUtil;
 import slimeknights.tconstruct.library.client.modifiers.ModifierIconManager;
 import slimeknights.tconstruct.library.modifiers.Modifier;
 import slimeknights.tconstruct.library.modifiers.ModifierEntry;
@@ -27,7 +25,6 @@ import slimeknights.tconstruct.tables.block.entity.table.ModifierWorktableBlockE
 import slimeknights.tconstruct.tables.menu.ModifierWorktableContainerMenu;
 import slimeknights.tconstruct.tools.item.ModifierCrystalItem;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,6 +73,8 @@ public class ModifierWorktableScreen extends ToolTableScreen<ModifierWorktableBl
         updateArmorStandPreview(menu.getSlot(ModifierWorktableBlockEntity.TINKER_SLOT).getItem());
       }
     }
+
+    this.setupArmorStandPreview(-55, 125, 50);
   }
 
   @Override
@@ -99,10 +98,10 @@ public class ModifierWorktableScreen extends ToolTableScreen<ModifierWorktableBl
 
     // TODO: debug, remove
     graphics.setColor(1.0F, 0, 0, 1.0F);
-    graphics.blit(BACKGROUND, ARMOR_STAND_PREVIEW_X, ARMOR_STAND_PREVIEW_Y, 0, 0, ARMOR_STAND_PREVIEW_WIDTH, ARMOR_STAND_PREVIEW_HEIGHT);
+    graphics.blit(BACKGROUND, this.armorStandBoxX, this.armorStandBoxY, 0, 0, this.armorStandBoxW, this.armorStandBoxH);
     graphics.setColor(1.0F, 1f, 1f, 1.0F);
 
-    renderArmorStand(graphics, -55, 125, 50);
+    renderArmorStand(graphics);
   }
 
   /**
@@ -237,20 +236,11 @@ public class ModifierWorktableScreen extends ToolTableScreen<ModifierWorktableBl
     }
   }
 
-
-
-
-  final int ARMOR_STAND_PREVIEW_X = this.cornerX + 115;
-  final int ARMOR_STAND_PREVIEW_Y = this.cornerY + 130;
-  final int ARMOR_STAND_PREVIEW_WIDTH = 120;
-  final int ARMOR_STAND_PREVIEW_HEIGHT = 100;
-
-
   /* Scrollbar logic */
+
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
     this.clickedOnScrollBar = false;
-    this.clickedOnArmorStand = false;
 
     if (this.tinkerInfo.handleMouseClicked(mouseX, mouseY, mouseButton)
         || this.modifierInfo.handleMouseClicked(mouseX, mouseY, mouseButton)) {
@@ -276,10 +266,6 @@ public class ModifierWorktableScreen extends ToolTableScreen<ModifierWorktableBl
       }
     }
 
-    if (GuiUtil.isHovered((int) mouseX, (int) mouseY, ARMOR_STAND_PREVIEW_X, ARMOR_STAND_PREVIEW_Y, ARMOR_STAND_PREVIEW_WIDTH, ARMOR_STAND_PREVIEW_HEIGHT)) {
-      this.clickedOnArmorStand = true;
-    }
-
     return super.mouseClicked(mouseX, mouseY, mouseButton);
   }
 
@@ -298,12 +284,6 @@ public class ModifierWorktableScreen extends ToolTableScreen<ModifierWorktableBl
       this.modifierIndexOffset = (int) ((this.sliderProgress * this.getHiddenRows()) + 0.5D) * 4;
       return true;
     }
-
-    if (this.clickedOnArmorStand && this.enableArmorStandPreview && this.dragLastX != -1) {
-      this.armorStandAngle += (float) (mouseX - this.dragLastX) / 10f;
-      // TODO: return something??
-    }
-    this.dragLastX = mouseX;
 
     return super.mouseDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, unknown);
   }

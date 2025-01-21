@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.joml.Quaternionf;
 import slimeknights.mantle.client.SafeClientAccess;
 import slimeknights.tconstruct.TConstruct;
+import slimeknights.tconstruct.library.client.GuiUtil;
 import slimeknights.tconstruct.library.modifiers.Modifier;
 import slimeknights.tconstruct.library.modifiers.ModifierEntry;
 import slimeknights.tconstruct.library.tools.item.ITinkerStationDisplay;
@@ -46,10 +47,20 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
   protected final Player player;
   @Nullable
   protected ArmorStand armorStandPreview;
-  protected double dragLastX = -1;
-  protected float armorStandAngle = 0f;
   protected boolean enableArmorStandPreview = true;
   protected boolean clickedOnArmorStand = false;
+
+  protected int armorStandX = 0;
+  protected int armorStandY = 0;
+  protected int armorStandScale = 10;
+  protected float armorStandAngle = 0;
+
+  // TODO: box vars don't need to be fields once debug box is removed
+  protected int armorStandBoxX;
+  protected int armorStandBoxY;
+  protected int armorStandBoxW;
+  protected int armorStandBoxH;
+  protected double armorStandLastMouseX = -1;
 
   public ToolTableScreen(C c, Inventory playerInventory, Component title) {
     super(c, playerInventory, title);
@@ -83,16 +94,30 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
   /**
    * Renders the armor stand
    * @param graphics  Graphics instance
-   * @param x         Stand X position
-   * @param y         Stand Y position
-   * @param scale     Stand size
    */
-  protected void renderArmorStand(GuiGraphics graphics, int x, int y, int scale) {
+  protected void renderArmorStand(GuiGraphics graphics) {
     if (this.armorStandPreview != null) {
       Quaternionf pose = new Quaternionf();
-      SmithingScreen.ARMOR_STAND_ANGLE.rotateY(armorStandAngle, pose);
-      InventoryScreen.renderEntityInInventory(graphics, this.cornerX + x, this.cornerY + y, scale, pose, null, this.armorStandPreview);
+      SmithingScreen.ARMOR_STAND_ANGLE.rotateY(this.armorStandAngle, pose);
+      InventoryScreen.renderEntityInInventory(graphics, this.armorStandX, this.armorStandY, this.armorStandScale, pose, null, this.armorStandPreview);
     }
+  }
+
+ /**
+  * Setup clickable areas and position for the armor stand
+  * @param x         Stand X position
+  * @param y         Stand Y position
+  * @param scale     Stand size
+  */
+  protected void setupArmorStandPreview(int x, int y, int scale) {
+    this.armorStandX = this.cornerX + x;
+    this.armorStandY = this.cornerY + y;
+    this.armorStandScale = scale;
+
+    this.armorStandBoxW = scale + 30;
+    this.armorStandBoxH = scale * 2;
+    this.armorStandBoxX = this.armorStandX - this.armorStandBoxW / 2;
+    this.armorStandBoxY = this.armorStandY - this.armorStandBoxH + 5;
   }
 
   /** Updates the item displayed on the armor stand */
@@ -174,5 +199,30 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
 
     modifierInfo.setCaption(title);
     modifierInfo.setText(modifierNames, modifierTooltip);
+  }
+
+  @Override
+  public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+    this.clickedOnArmorStand = this.enableArmorStandPreview && GuiUtil.isHovered((int) mouseX, (int) mouseY, this.armorStandBoxX, this.armorStandBoxY, this.armorStandBoxW, this.armorStandBoxH);
+
+    return super.mouseClicked(mouseX, mouseY, mouseButton);
+  }
+
+  @Override
+  public boolean mouseReleased(double mouseX, double mouseY, int state) {
+    this.clickedOnArmorStand = false;
+    this.armorStandLastMouseX = -1;
+
+    return super.mouseReleased(mouseX, mouseY, state);
+  }
+
+  @Override
+  public boolean mouseDragged(double mouseX, double mouseY, int clickedMouseButton, double timeSinceLastClick, double unkowwn) {
+    if (this.enableArmorStandPreview && this.clickedOnArmorStand && this.armorStandLastMouseX != -1) {
+      this.armorStandAngle += (float) (mouseX - this.armorStandLastMouseX) / 10f;
+    }
+    this.armorStandLastMouseX = mouseX;
+
+    return super.mouseDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, unkowwn);
   }
 }

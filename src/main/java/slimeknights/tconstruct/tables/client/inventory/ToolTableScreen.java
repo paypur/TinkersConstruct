@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.joml.Quaternionf;
 import slimeknights.mantle.client.SafeClientAccess;
 import slimeknights.tconstruct.TConstruct;
 import slimeknights.tconstruct.library.modifiers.Modifier;
@@ -45,7 +46,10 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
   protected final Player player;
   @Nullable
   protected ArmorStand armorStandPreview;
+  protected double dragLastX = -1;
+  protected float armorStandAngle = 0f;
   protected boolean enableArmorStandPreview = true;
+  protected boolean clickedOnArmorStand = false;
 
   public ToolTableScreen(C c, Inventory playerInventory, Component title) {
     super(c, playerInventory, title);
@@ -85,7 +89,9 @@ public abstract class ToolTableScreen<T extends BlockEntity, C extends TabbedCon
    */
   protected void renderArmorStand(GuiGraphics graphics, int x, int y, int scale) {
     if (this.armorStandPreview != null) {
-      InventoryScreen.renderEntityInInventory(graphics, this.cornerX + x, this.cornerY + y, scale, SmithingScreen.ARMOR_STAND_ANGLE, null, this.armorStandPreview);
+      Quaternionf pose = new Quaternionf();
+      SmithingScreen.ARMOR_STAND_ANGLE.rotateY(armorStandAngle, pose);
+      InventoryScreen.renderEntityInInventory(graphics, this.cornerX + x, this.cornerY + y, scale, pose, null, this.armorStandPreview);
     }
   }
 

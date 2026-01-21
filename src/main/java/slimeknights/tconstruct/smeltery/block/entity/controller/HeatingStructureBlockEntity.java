@@ -502,6 +502,7 @@ public abstract class HeatingStructureBlockEntity extends NameableBlockEntity im
     } else {
       // mark that fluids need an update on the client
       fluidUpdateQueued = true;
+      level.updateNeighbourForOutputSignal(worldPosition, level.getBlockState(worldPosition).getBlock());
       this.setChangedFast();
     }
   }

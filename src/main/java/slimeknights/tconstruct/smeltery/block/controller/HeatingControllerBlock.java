@@ -10,7 +10,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fluids.FluidStack;
 import slimeknights.mantle.block.RetexturedBlock;
+import slimeknights.mantle.fluid.tooltip.FluidTooltipHandler;
+import slimeknights.mantle.fluid.tooltip.FluidUnitList;
 import slimeknights.mantle.util.BlockEntityHelper;
 import slimeknights.mantle.util.RetexturedHelper;
 import slimeknights.tconstruct.common.network.TinkerNetwork;
@@ -72,5 +75,33 @@ public abstract class HeatingControllerBlock extends ControllerBlock {
   @Override
   public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
     return RetexturedBlock.getPickBlock(world, pos, state);
+  }
+
+  @Override
+  public boolean hasAnalogOutputSignal(BlockState pState) {
+    return true;
+  }
+
+  @Override
+  public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pPos) {
+    if (world.getBlockEntity(pPos) instanceof HeatingStructureBlockEntity hcb) {
+      FluidStack fluid = hcb.getTank().getFluidInTank(0);
+      FluidUnitList list = FluidTooltipHandler.INSTANCE.getUnitList(fluid.getFluid());
+      List<Integer> multiples = list.getMultiples(fluid.getAmount());
+
+      assert multiples.size() <= 3 && !multiples.isEmpty();
+
+      // TODO: signal is not stable
+      // so while pouring blocks
+      // signal will indicate that there are ingots
+
+      // ? sorta fixed by switching signal order
+
+      if (multiples.get(0) != 0) return Math.min(multiples.get(0), 11);
+      if (multiples.size() >= 2 && multiples.get(1) != 0) return Math.min(multiples.get(1), 2) + 11;
+      if (multiples.size() == 3 && multiples.get(2) != 0) return Math.min(multiples.get(2), 2) + 13;
+    }
+
+    return 0;
   }
 }
